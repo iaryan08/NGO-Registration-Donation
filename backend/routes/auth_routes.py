@@ -7,7 +7,9 @@ from datetime import datetime, timezone
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
-async def get_db():
+def get_db():
+    import sys
+    sys.path.insert(0, '/app/backend')
     from server import db
     return db
 
