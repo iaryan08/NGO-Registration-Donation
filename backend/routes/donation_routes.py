@@ -56,7 +56,7 @@ async def initialize_donation(
         
         checkout_request = CheckoutSessionRequest(
             amount=donation_data.amount,
-            currency="usd",
+            currency=donation_data.currency,
             success_url=success_url,
             cancel_url=cancel_url,
             metadata={
