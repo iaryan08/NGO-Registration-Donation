@@ -6,7 +6,7 @@ from datetime import datetime
 
 router = APIRouter(prefix="/user", tags=["user"])
 
-async def get_db():
+def get_db():
     from server import db
     return db
 
