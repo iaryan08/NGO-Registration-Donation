@@ -145,7 +145,21 @@ const UserDashboard = () => {
           <Card className="p-6 rounded-2xl shadow-sm border border-border/50 bg-secondary/5" data-testid="donation-form-card">
             <h3 className="text-lg font-semibold text-foreground mb-4">Make a Donation</h3>
             <form onSubmit={handleDonate}>
-              <Label htmlFor="amount" className="text-sm font-medium">Amount (USD)</Label>
+              <Label htmlFor="currency" className="text-sm font-medium">Currency</Label>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger className="mt-2 mb-4 h-12 rounded-lg" data-testid="currency-select">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CURRENCIES.map((curr) => (
+                    <SelectItem key={curr.value} value={curr.value}>
+                      {curr.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Label htmlFor="amount" className="text-sm font-medium">Amount</Label>
               <Input
                 id="amount"
                 data-testid="donation-amount-input"
