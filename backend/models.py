@@ -49,6 +49,7 @@ class Token(BaseModel):
 
 class DonationBase(BaseModel):
     amount: float
+    currency: Currency = Currency.USD
 
 class DonationCreate(DonationBase):
     pass
