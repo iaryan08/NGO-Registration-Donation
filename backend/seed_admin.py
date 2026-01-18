@@ -1,7 +1,7 @@
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
-from backend.auth import get_password_hash
-from backend.models import UserRole
+from auth import get_password_hash
+from models import UserRole
 import os
 import uuid
 from datetime import datetime, timezone
