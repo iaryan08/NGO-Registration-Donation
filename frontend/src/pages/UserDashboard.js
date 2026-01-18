@@ -206,7 +206,9 @@ const UserDashboard = () => {
                   {profile?.donation_history.donations.map((donation) => (
                     <tr key={donation.id} className="border-b border-border/50 hover:bg-accent/20 transition-colors" data-testid={`donation-row-${donation.id}`}>
                       <td className="py-3 px-4 text-sm">{new Date(donation.created_at).toLocaleDateString()}</td>
-                      <td className="py-3 px-4 text-sm font-medium">${donation.amount.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-sm font-medium">
+                        {getCurrencySymbol(donation.currency || "usd")}{donation.amount.toFixed(2)} {(donation.currency || "usd").toUpperCase()}
+                      </td>
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           {getStatusIcon(donation.status)}
