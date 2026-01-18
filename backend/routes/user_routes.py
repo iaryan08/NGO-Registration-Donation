@@ -7,6 +7,8 @@ from datetime import datetime
 router = APIRouter(prefix="/user", tags=["user"])
 
 def get_db():
+    import sys
+    sys.path.insert(0, '/app/backend')
     from server import db
     return db
 

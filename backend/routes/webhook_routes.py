@@ -9,6 +9,8 @@ router = APIRouter(prefix="/webhook", tags=["webhooks"])
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 
 def get_db():
+    import sys
+    sys.path.insert(0, '/app/backend')
     from server import db
     return db
 
