@@ -21,7 +21,7 @@ async def stripe_webhook(request: Request):
     Updates donation status based on payment events.
     """
     try:
-        db = await get_db()
+        db = get_db()
         body = await request.body()
         signature = request.headers.get("Stripe-Signature")
         
