@@ -99,7 +99,9 @@ const DonationSuccess = () => {
             </div>
             <h1 className="text-3xl font-bold text-primary mb-4" data-testid="success-title">Thank You!</h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Your donation of <span className="font-bold text-secondary">${donationDetails.amount.toFixed(2)}</span> has been received.
+              Your donation of <span className="font-bold text-secondary">
+                {CURRENCY_SYMBOLS[donationDetails.currency] || "$"}{donationDetails.amount.toFixed(2)} {donationDetails.currency?.toUpperCase()}
+              </span> has been received.
             </p>
             <p className="text-base text-muted-foreground mb-8">
               Your generosity helps us continue our mission to create lasting change in communities around the world.
