@@ -12,6 +12,15 @@ class DonationStatus(str, Enum):
     SUCCESS = "success"
     FAILED = "failed"
 
+class Currency(str, Enum):
+    USD = "usd"
+    EUR = "eur"
+    GBP = "gbp"
+    INR = "inr"
+    CAD = "cad"
+    AUD = "aud"
+    JPY = "jpy"
+
 class UserBase(BaseModel):
     name: str
     email: EmailStr
