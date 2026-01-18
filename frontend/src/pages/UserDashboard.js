@@ -131,8 +131,10 @@ const UserDashboard = () => {
           {/* Stats */}
           <Card className="p-6 rounded-2xl shadow-sm border border-border/50" data-testid="total-donations-card">
             <DollarSign className="h-10 w-10 text-primary mb-4" />
-            <h3 className="text-3xl font-bold text-primary">${profile?.donation_history.total_donated.toFixed(2)}</h3>
-            <p className="text-sm text-muted-foreground mt-2">Total Donated</p>
+            <h3 className="text-3xl font-bold text-primary">
+              {getCurrencySymbol(currency)}{profile?.donation_history.total_donated.toFixed(2)}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-2">Total Donated ({currency.toUpperCase()})</p>
           </Card>
 
           <Card className="p-6 rounded-2xl shadow-sm border border-border/50" data-testid="donation-count-card">
