@@ -154,7 +154,8 @@ async def verify_donation(
             "donation_id": donation_doc["id"],
             "status": new_status,
             "payment_status": checkout_status.payment_status,
-            "amount": checkout_status.amount_total / 100  # Convert cents to dollars
+            "amount": checkout_status.amount_total / 100,  # Convert cents to dollars
+            "currency": donation_doc.get("currency", "usd")
         }
         
     except Exception as e:
