@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.models import AdminStats, User
-from backend.dependencies import get_current_admin
+from models import AdminStats, User
+from dependencies import get_current_admin
 from datetime import datetime
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 async def get_db():
-    from backend.server import db
+    from server import db
     return db
 
 @router.get("/dashboard", response_model=AdminStats)

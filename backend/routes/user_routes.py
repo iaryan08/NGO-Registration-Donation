@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.models import UserProfile, User, Donation, DonationHistory
-from backend.dependencies import get_current_user
+from models import UserProfile, User, Donation, DonationHistory
+from dependencies import get_current_user
 from datetime import datetime
 
 router = APIRouter(prefix="/user", tags=["user"])
 
 async def get_db():
-    from backend.server import db
+    from server import db
     return db
 
 @router.get("/profile", response_model=UserProfile)

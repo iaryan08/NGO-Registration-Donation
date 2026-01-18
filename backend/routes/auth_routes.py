@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
 async def get_db():
-    from backend.server import db
+    from server import db
     return db
 
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)

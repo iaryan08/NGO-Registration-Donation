@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.models import DonationCreate, Donation, DonationStatus
-from backend.dependencies import get_current_user
+from models import DonationCreate, Donation, DonationStatus
+from dependencies import get_current_user
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionRequest, CheckoutSessionResponse, CheckoutStatusResponse
 import uuid
 import os
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/donate", tags=["donations"])
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 
 async def get_db():
-    from backend.server import db
+    from server import db
     return db
 
 @router.post("/initialize")

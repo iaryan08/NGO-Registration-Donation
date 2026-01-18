@@ -9,7 +9,7 @@ router = APIRouter(prefix="/webhook", tags=["webhooks"])
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 
 async def get_db():
-    from backend.server import db
+    from server import db
     return db
 
 @router.post("/stripe")
