@@ -36,6 +36,7 @@ async def initialize_donation(
         "id": donation_id,
         "user_id": current_user["user_id"],
         "amount": donation_data.amount,
+        "currency": donation_data.currency,
         "transaction_id": None,
         "status": DonationStatus.PENDING,
         "created_at": datetime.now(timezone.utc).isoformat(),
