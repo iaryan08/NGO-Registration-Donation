@@ -22,7 +22,7 @@ app = FastAPI(title="NGO Registration and Donation Management System")
 api_router = APIRouter(prefix="/api")
 
 # Import routes
-from backend.routes import auth_routes, donation_routes, user_routes, admin_routes, webhook_routes
+from routes import auth_routes, donation_routes, user_routes, admin_routes, webhook_routes
 
 # Include routers
 api_router.include_router(auth_routes.router)
