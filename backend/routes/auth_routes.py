@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.models import UserRegister, UserLogin, Token, User, UserInDB
-from backend.auth import verify_password, get_password_hash, create_access_token
+from models import UserRegister, UserLogin, Token, User, UserInDB
+from auth import verify_password, get_password_hash, create_access_token
 import uuid
 from datetime import datetime, timezone
 
