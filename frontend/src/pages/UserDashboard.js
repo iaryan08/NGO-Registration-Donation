@@ -63,7 +63,7 @@ const UserDashboard = () => {
       const originUrl = window.location.origin;
       const response = await axios.post(
         `${API}/donate/initialize`,
-        { amount: parseFloat(donationAmount) },
+        { amount: parseFloat(donationAmount), currency: currency },
         {
           params: { origin_url: originUrl },
           headers: { Authorization: `Bearer ${token}` }
@@ -75,6 +75,11 @@ const UserDashboard = () => {
       toast.error(error.response?.data?.detail || "Failed to initialize donation");
       setDonating(false);
     }
+  };
+
+  const getCurrencySymbol = (currencyCode) => {
+    const curr = CURRENCIES.find(c => c.value === currencyCode);
+    return curr ? curr.symbol : "$";
   };
 
   const handleLogout = () => {
