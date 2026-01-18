@@ -112,53 +112,79 @@ async def verify_donation(
     Verify donation status by checking Stripe session.
     Updates donation record based on payment status.
     """
+    import logging
+    logger = logging.getLogger(__name__)
+    
     try:
-        webhook_url = "https://placeholder.com/webhook"  # Not used for status check
-        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
-        
-        checkout_status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
-        
-        # Find donation by transaction_id
+        # Find donation by transaction_id first
         donation_doc = await db.donations.find_one({"transaction_id": session_id}, {"_id": 0})
         
         if not donation_doc:
+            logger.error(f"Donation not found for session_id: {session_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Donation not found"
             )
         
-        # Update donation status based on payment status
-        new_status = DonationStatus.SUCCESS if checkout_status.payment_status == "paid" else DonationStatus.PENDING
+        logger.info(f"Verifying payment for session: {session_id}, current status: {donation_doc['status']}")
         
-        if checkout_status.status == "expired":
-            new_status = DonationStatus.FAILED
-        
-        # Only update if status changed (prevents duplicate processing)
-        if donation_doc["status"] != new_status:
-            await db.donations.update_one(
-                {"transaction_id": session_id},
-                {"$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
-            )
+        # Check Stripe payment status
+        try:
+            webhook_url = "https://placeholder.com/webhook"  # Not used for status check
+            stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url=webhook_url)
+            checkout_status: CheckoutStatusResponse = await stripe_checkout.get_checkout_status(session_id)
             
-            # Update payment_transactions
-            await db.payment_transactions.update_one(
-                {"session_id": session_id},
-                {"$set": {
-                    "payment_status": checkout_status.payment_status,
-                    "status": new_status,
-                    "updated_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
+            logger.info(f"Stripe status - payment_status: {checkout_status.payment_status}, status: {checkout_status.status}")
+            
+            # Update donation status based on payment status
+            new_status = DonationStatus.SUCCESS if checkout_status.payment_status == "paid" else DonationStatus.PENDING
+            
+            if checkout_status.status == "expired":
+                new_status = DonationStatus.FAILED
+            
+            # Only update if status changed (prevents duplicate processing)
+            if donation_doc["status"] != new_status:
+                await db.donations.update_one(
+                    {"transaction_id": session_id},
+                    {"$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+                )
+                
+                # Update payment_transactions
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {
+                        "payment_status": checkout_status.payment_status,
+                        "status": new_status,
+                        "updated_at": datetime.now(timezone.utc).isoformat()
+                    }}
+                )
+                
+                logger.info(f"Updated donation status from {donation_doc['status']} to {new_status}")
+            
+            return {
+                "donation_id": donation_doc["id"],
+                "status": new_status,
+                "payment_status": checkout_status.payment_status,
+                "amount": checkout_status.amount_total / 100,  # Convert cents to dollars
+                "currency": donation_doc.get("currency", "usd")
+            }
+            
+        except Exception as stripe_error:
+            logger.error(f"Stripe API error: {str(stripe_error)}")
+            # Return current donation status if Stripe check fails
+            return {
+                "donation_id": donation_doc["id"],
+                "status": donation_doc["status"],
+                "payment_status": "unknown",
+                "amount": donation_doc["amount"],
+                "currency": donation_doc.get("currency", "usd"),
+                "error": "Unable to verify with payment provider"
+            }
         
-        return {
-            "donation_id": donation_doc["id"],
-            "status": new_status,
-            "payment_status": checkout_status.payment_status,
-            "amount": checkout_status.amount_total / 100,  # Convert cents to dollars
-            "currency": donation_doc.get("currency", "usd")
-        }
-        
+    except HTTPException:
+        raise
     except Exception as e:
+        logger.error(f"Unexpected error in verify_donation: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to verify payment: {str(e)}"
