@@ -26,8 +26,8 @@ const DonationSuccess = () => {
 
   const verifyPayment = async (sessionId) => {
     let attempts = 0;
-    const maxAttempts = 5;
-    const pollInterval = 2000;
+    const maxAttempts = 10;
+    const pollInterval = 3000;
 
     const poll = async () => {
       try {
@@ -42,17 +42,31 @@ const DonationSuccess = () => {
           return;
         }
 
-        if (response.data.status === "expired" || attempts >= maxAttempts) {
+        if (response.data.status === "failed" || response.data.status === "expired") {
           setVerifying(false);
-          toast.error("Payment verification timed out. Please check your donation history.");
+          toast.error("Payment verification failed. Please check your donation history.");
           return;
         }
 
         attempts++;
+        
+        if (attempts >= maxAttempts) {
+          setVerifying(false);
+          toast.warning("Payment is still processing. Please check your donation history in a few minutes.");
+          return;
+        }
+
         setTimeout(poll, pollInterval);
       } catch (error) {
-        setVerifying(false);
-        toast.error("Failed to verify payment");
+        console.error("Payment verification error:", error);
+        attempts++;
+        
+        if (attempts >= maxAttempts) {
+          setVerifying(false);
+          toast.error("Unable to verify payment. Please check your donation history.");
+        } else {
+          setTimeout(poll, pollInterval);
+        }
       }
     };
 
