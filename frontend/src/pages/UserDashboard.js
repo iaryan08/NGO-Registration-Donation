@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 import axios from "axios";
@@ -12,12 +13,23 @@ import { Heart, LogOut, DollarSign, CheckCircle, XCircle, Clock } from "lucide-r
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+const CURRENCIES = [
+  { value: "usd", label: "USD ($)", symbol: "$" },
+  { value: "eur", label: "EUR (€)", symbol: "€" },
+  { value: "gbp", label: "GBP (£)", symbol: "£" },
+  { value: "inr", label: "INR (₹)", symbol: "₹" },
+  { value: "cad", label: "CAD ($)", symbol: "C$" },
+  { value: "aud", label: "AUD ($)", symbol: "A$" },
+  { value: "jpy", label: "JPY (¥)", symbol: "¥" }
+];
+
 const UserDashboard = () => {
   const navigate = useNavigate();
   const { user, logout, token } = useAuth();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [donationAmount, setDonationAmount] = useState("");
+  const [currency, setCurrency] = useState("usd");
   const [donating, setDonating] = useState(false);
 
   useEffect(() => {
