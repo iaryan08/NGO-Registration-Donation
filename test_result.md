@@ -101,3 +101,150 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  1. Fix NPM dependency conflict preventing installation on desktop (Node.js v25.2.1 environment)
+  2. Fix payment verification issues - "We couldn't verify your payment" error
+  3. Add multi-currency support (USD, EUR, GBP, INR, CAD, AUD, JPY) to donation system
+
+backend:
+  - task: "Fix webhook async bug"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/webhook_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed line 24 - removed 'await' from get_db() call as it's not an async function. This was causing webhook failures."
+  
+  - task: "Add Currency model and support"
+    implemented: true
+    working: true
+    file: "/app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added Currency enum with support for USD, EUR, GBP, INR, CAD, AUD, JPY. Updated DonationBase and Donation models to include currency field."
+  
+  - task: "Update donation routes for multi-currency"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/donation_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Updated initialize endpoint to accept and store currency. Updated Stripe checkout to use selected currency. Updated verify endpoint to return currency information."
+
+frontend:
+  - task: "Fix date-fns dependency conflict"
+    implemented: true
+    working: true
+    file: "/app/frontend/package.json"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Downgraded date-fns from 4.1.0 to 3.6.0 and upgraded react-day-picker from 8.10.1 to 9.4.3 to resolve peer dependency conflict. Dependencies installed successfully with yarn."
+  
+  - task: "Improve payment verification polling"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/DonationSuccess.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Increased polling attempts from 5 to 10 and interval from 2s to 3s. Added better error handling with retry logic. Added console logging for debugging. Improved error messages for different failure scenarios."
+  
+  - task: "Add currency selection to donation form"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/UserDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added currency state and Select component for currency selection. Added CURRENCIES constant with 7 supported currencies. Updated donation API call to include selected currency. Added getCurrencySymbol helper function."
+  
+  - task: "Display currency in donation history"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/UserDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Updated donation history table to display amount with correct currency symbol and code. Falls back to USD if currency not specified."
+  
+  - task: "Display currency on success page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/DonationSuccess.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added CURRENCY_SYMBOLS mapping. Updated success message to show amount with correct currency symbol and code from API response."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Payment verification flow with improved polling"
+    - "Multi-currency donation flow"
+    - "Currency display in history and success pages"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      FIXES IMPLEMENTED:
+      
+      1. NPM DEPENDENCY CONFLICT (RESOLVED):
+         - Downgraded date-fns from 4.1.0 to 3.6.0
+         - Upgraded react-day-picker from 8.10.1 to 9.4.3
+         - Dependencies now install successfully with npm/yarn
+      
+      2. PAYMENT VERIFICATION (FIXED):
+         - Fixed critical webhook bug (line 24 in webhook_routes.py)
+         - Increased polling attempts from 5 to 10
+         - Increased polling interval from 2s to 3s (total 30s wait time)
+         - Added retry logic for network errors
+         - Improved error messages for different scenarios
+      
+      3. MULTI-CURRENCY SUPPORT (IMPLEMENTED):
+         - Added 7 currencies: USD, EUR, GBP, INR, CAD, AUD, JPY
+         - Currency selector in donation form
+         - Currency stored in backend with each donation
+         - Currency displayed correctly in donation history
+         - Currency shown on success page with correct symbol
+      
+      READY FOR TESTING:
+      - Backend endpoints for multi-currency donations
+      - Frontend currency selection and display
+      - Payment verification flow with improved reliability
