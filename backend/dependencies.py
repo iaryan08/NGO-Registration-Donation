@@ -1,5 +1,6 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer
+from fastapi.security.http import HTTPAuthorizationCredentials
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from backend.auth import decode_token
 from backend.models import User, UserRole
@@ -7,7 +8,7 @@ import os
 
 security = HTTPBearer()
 
-async def get_current_user(credentials: HTTPAuthCredentials = Depends(security)) -> dict:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
     """Get the current authenticated user from JWT token."""
     token = credentials.credentials
     payload = decode_token(token)
