@@ -5,7 +5,7 @@ from datetime import datetime
 import uuid
 
 class NGOAPITester:
-    def __init__(self, base_url="https://ngo-manager-4.preview.emergentagent.com"):
+    def __init__(self, base_url="https://pay-desktop-compat.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.user_token = None
@@ -225,7 +225,7 @@ class NGOAPITester:
         success, response = self.run_test(
             "Donation Initialization", 
             "POST", 
-            "donate/initialize?origin_url=https://ngo-manager-4.preview.emergentagent.com", 
+            "donate/initialize?origin_url=https://pay-desktop-compat.preview.emergentagent.com", 
             200, 
             data=donation_data,
             token=self.user_token
