@@ -2,8 +2,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.auth import decode_token
-from backend.models import User, UserRole
+from auth import decode_token
+from models import User, UserRole
 import os
 
 security = HTTPBearer()
